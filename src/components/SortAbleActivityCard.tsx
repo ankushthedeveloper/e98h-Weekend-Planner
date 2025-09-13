@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { GripVertical, MapPin, Trash2 } from "lucide-react";
-import { type Day, type ScheduledActivity, CATEGORIES } from "../assets/assets";
+import { type Day, type ScheduledActivity, CATEGORIES } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
 import { CSS } from "@dnd-kit/utilities";
 import { VibeSelector } from "./VibeSelector";

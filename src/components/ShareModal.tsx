@@ -1,6 +1,6 @@
 import { toPng } from "html-to-image";
 import { CalendarDays, Download, X } from "lucide-react";
-import { CATEGORIES, THEMES, type ScheduledActivity } from "../assets/assets";
+import { CATEGORIES, THEMES, type ScheduledActivity } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
 import { useRef } from "react";
 

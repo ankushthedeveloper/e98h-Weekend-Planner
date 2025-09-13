@@ -1,4 +1,4 @@
-import { MOCK_ACTIVITIES } from "./assets/assets";
+import { MOCK_ACTIVITIES } from "./Types/type";
 import { useWeekendStore } from "./state/ZustandState";
 
 const initialState = useWeekendStore.getState();

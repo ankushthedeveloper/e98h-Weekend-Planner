@@ -1,4 +1,4 @@
-import { VIBES, type Vibe } from "../assets/assets";
+import { VIBES, type Vibe } from "../Types/type";
 
 export const VibeSelector = ({
   selectedVibe,
@@ -7,7 +7,7 @@ export const VibeSelector = ({
   selectedVibe?: Vibe;
   onSelect: (vibe: Vibe) => void;
 }) => (
-  <div className="flex items-center gap-1 rounded-full bg-gray-100 p-1">
+  <div className="flex justify-center items-center gap-1 rounded-full bg-gray-100 p-1">
     {(Object.keys(VIBES) as Vibe[]).map((vibe) => (
       <button
         key={vibe}

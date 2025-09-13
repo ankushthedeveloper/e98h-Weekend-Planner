@@ -2,10 +2,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { THEMES, type Day, type ScheduledActivity } from "../assets/assets";
-import { SortableActivityCard } from "./SortAbleActivityCard";
 import { useDroppable } from "@dnd-kit/core";
+import { THEMES, type Day, type ScheduledActivity } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
+import { SortableActivityCard } from "./SortAbleActivityCard";
 
 export const ScheduleDay = ({
   day,
@@ -20,9 +20,11 @@ export const ScheduleDay = ({
   const activityIds = activities.map((a) => a.scheduledId);
 
   return (
-    <div className={`${themeClasses.card} p-4 rounded-xl shadow-sm`}>
+    <div
+      className={`${themeClasses.card} p-4 rounded-xl shadow-sm flex flex-col bg-blue-400`}
+    >
       <h2
-        className={`text-xl font-bold ${themeClasses.titleText} mb-4 text-center capitalize`}
+        className={`text-xl font-bold ${themeClasses.titleText} mb-4 text-center capitalize flex-shrink-0`}
       >
         {day}
       </h2>
@@ -33,7 +35,7 @@ export const ScheduleDay = ({
       >
         <div
           ref={setNodeRef}
-          className="space-y-3 min-h-[400px] border-2 border-dashed border-gray-300 rounded-lg p-2 bg-gray-50/50"
+          className="space-y-3 h-[45vh] border-2 border-dashed border-gray-300 rounded-lg p-2 bg-gray-50/50 flex-grow pb-4 overflow-y-scroll [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] "
         >
           {activities.length > 0 ? (
             activities.map((activity) => (

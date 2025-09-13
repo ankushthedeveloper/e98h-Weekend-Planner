@@ -1,7 +1,7 @@
 import { Paintbrush, Check } from "lucide-react";
 import { useState } from "react";
-import { THEMES } from "../assets/assets";
-import type { ThemeKey } from "../assets/assets";
+import { THEMES } from "../Types/type";
+import type { ThemeKey } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
 export const ThemeSwitcher = () => {
   const { theme, setTheme } = useWeekendStore();

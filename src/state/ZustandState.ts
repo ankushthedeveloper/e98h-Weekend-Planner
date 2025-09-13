@@ -5,7 +5,7 @@ import type {
   Day,
   ThemeKey,
   Vibe,
-} from "../assets/assets";
+} from "../Types/type";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
 

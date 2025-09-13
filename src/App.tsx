@@ -1,43 +1,80 @@
-import { closestCenter, DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { MOCK_ACTIVITIES, THEMES, type Day } from "./assets/assets";
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import { PlusCircle } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  MOCK_ACTIVITIES,
+  THEMES,
+  type Activity,
+  type Day,
+  type ScheduledActivity,
+} from "./Types/type";
 import { DraggableActivityOption } from "./components/DraggableActivityOption";
+import { HolidayAwarenessBanner } from "./components/HolidayAwarenessBanner";
 import { Navbar } from "./components/Navbar";
 import { ScheduleDay } from "./components/ScheduleDay";
 import { ShareModal } from "./components/ShareModal";
+import { SortableActivityCard } from "./components/SortAbleActivityCard";
 import { useWeekendStore } from "./state/ZustandState";
-import { useState } from "react";
-import { HolidayAwarenessBanner } from "./components/HolidayAwarenessBanner";
-import { PlusCircle } from "lucide-react";
 
 function App() {
   const { days, theme, addActivity, moveActivity, addDay } = useWeekendStore();
   const state = useWeekendStore.getState();
   const themeClasses = THEMES[theme];
   const [isShareModalOpen, setShareModalOpen] = useState(false);
+  const scheduleSectionRef = useRef<HTMLElement>(null);
+
+  const [activeActivity, setActiveActivity] = useState<
+    Activity | ScheduledActivity | null
+  >(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const activityData = active.data.current?.activity;
+    if (activityData) {
+      setActiveActivity(activityData);
+    }
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveActivity(null);
     const { active, over } = event;
     if (!over) return;
-    if (active.data.current?.isOption) {
-      const day = over.id as Day;
-      const activity = active.data.current?.activity;
-      if (activity && state.days[day]) {
-        addActivity(day, activity);
+
+    const activeData = active.data.current;
+    const overData = over.data.current;
+    const destDay = (overData?.day || over.id) as Day;
+    if (!state.days[destDay]) return;
+
+    if (activeData?.isOption) {
+      const activity = activeData.activity as Activity;
+      if (activity) {
+        addActivity(destDay, activity);
       }
       return;
     }
-    const sourceDay = active.data.current?.day as Day;
-    if (!sourceDay) return;
-    const destDay = (over.data.current?.day || over.id) as Day;
-    const sourceIndex = state.days[sourceDay].findIndex(
-      (a) => a.scheduledId === active.id
+
+    const sourceDay = activeData?.day as Day;
+    const activeId = active.id.toString();
+    const overId = over.id.toString();
+
+    if (activeId === overId && sourceDay === destDay) return;
+
+    const sourceIndex = state.days[sourceDay]?.findIndex(
+      (a) => a.scheduledId === activeId
     );
-    let destIndex = state.days[destDay].findIndex(
-      (a) => a.scheduledId === over.id
+    let destIndex = state.days[destDay]?.findIndex(
+      (a) => a.scheduledId === overId
     );
     if (destIndex < 0) {
       destIndex = state.days[destDay].length;
     }
+
     if (sourceIndex > -1) {
       moveActivity(sourceDay, destDay, sourceIndex, destIndex);
     }
@@ -45,17 +82,23 @@ function App() {
 
   const handleAddDay = () => {
     const newDayName = prompt("Enter the name for the new day (e.g., Friday):");
-    if (newDayName) {
+    if (newDayName && !state.days[newDayName]) {
       addDay(newDayName);
+    } else if (newDayName) {
+      alert("A day with this name already exists.");
     }
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      collisionDetection={closestCenter}
+    >
       <div className={`${themeClasses.background} min-h-screen font-sans`}>
         <Navbar onShareClick={() => setShareModalOpen(true)} />
         <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-          <HolidayAwarenessBanner />
+          <HolidayAwarenessBanner scheduleRef={scheduleSectionRef} />
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="lg:w-1/3 xl:w-1/4">
               <div className="sticky top-24">
@@ -64,7 +107,7 @@ function App() {
                 >
                   Choose Activities
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 h-[60vh] pb-4 overflow-y-scroll [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   {MOCK_ACTIVITIES.map((activity) => (
                     <DraggableActivityOption
                       key={activity.id}
@@ -74,11 +117,9 @@ function App() {
                 </div>
               </div>
             </aside>
-            <section className="flex-1">
+            <section ref={scheduleSectionRef} className="flex-1">
               <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${
-                  Object.keys(days).length > 2 ? 3 : 2
-                } gap-6`}
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6`}
               >
                 {Object.entries(days).map(([dayName, activities]) => (
                   <ScheduleDay
@@ -87,7 +128,7 @@ function App() {
                     activities={activities}
                   />
                 ))}
-                <div className="flex items-center justify-center min-h-[400px]">
+                <div className="flex items-center justify-center min-h-[100px]">
                   <button
                     onClick={handleAddDay}
                     className="flex flex-col items-center justify-center w-full h-full bg-gray-100/50 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-200/50 transition-colors"
@@ -105,6 +146,15 @@ function App() {
           onClose={() => setShareModalOpen(false)}
         />
       </div>
+      <DragOverlay dropAnimation={null}>
+        {activeActivity ? (
+          "scheduledId" in activeActivity ? (
+            <SortableActivityCard activity={activeActivity} day="" />
+          ) : (
+            <DraggableActivityOption activity={activeActivity} />
+          )
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }
