@@ -3,7 +3,6 @@ import { THEMES } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
-// --------------- COMPONENT: Mobile Menu ---------------
 export const MobileMenu = ({
   isOpen,
   onClose,

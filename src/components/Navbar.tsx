@@ -31,7 +31,6 @@ export const Navbar = ({ onShareClick }: { onShareClick: () => void }) => {
               </span>
             </div>
 
-            {/* Desktop Menu */}
             <div className="hidden sm:flex items-center gap-4">
               <button
                 onClick={onShareClick}
@@ -51,8 +50,6 @@ export const Navbar = ({ onShareClick }: { onShareClick: () => void }) => {
                 <User className="h-5 w-5 text-gray-500" />
               </div>
             </div>
-
-            {/* Mobile Menu Button */}
             <div className="sm:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(true)}

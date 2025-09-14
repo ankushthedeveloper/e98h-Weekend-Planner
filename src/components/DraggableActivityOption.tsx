@@ -4,13 +4,10 @@ import { useDraggable } from "@dnd-kit/core";
 
 export const DraggableActivityOption = memo(
   ({ activity }: { activity: Activity }) => {
-    // We only need listeners and attributes. The visual clone is handled by DragOverlay.
     const { attributes, listeners, setNodeRef } = useDraggable({
       id: `option-${activity.id}`,
       data: { activity, isOption: true },
     });
-
-    // No style changes are needed for the original item. It remains static.
     const category = CATEGORIES[activity.category];
     const Icon = category.icon;
 
