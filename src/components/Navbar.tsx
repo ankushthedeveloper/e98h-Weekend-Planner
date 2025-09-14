@@ -1,9 +1,9 @@
-import { CalendarDays, Menu, Share2, Trash2, User } from "lucide-react";
+import { CalendarDays, Menu, Share2, TimerResetIcon, User } from "lucide-react";
 import { useState } from "react";
 import { THEMES } from "../Types/type";
 import { useWeekendStore } from "../state/ZustandState";
-import { ThemeSwitcher } from "./ThemeSwitcher";
 import { MobileMenu } from "./MobileMenu";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 export const Navbar = ({ onShareClick }: { onShareClick: () => void }) => {
   const { theme, setDays } = useWeekendStore();
   const themeClasses = THEMES[theme];
@@ -44,7 +44,7 @@ export const Navbar = ({ onShareClick }: { onShareClick: () => void }) => {
                 title="Reset Plan"
                 className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-100 rounded-full transition-colors"
               >
-                <Trash2 className="h-5 w-5" />
+                <TimerResetIcon className="h-5 w-5" />
               </button>
               <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-offset-2 ring-gray-300">
                 <User className="h-5 w-5 text-gray-500" />
