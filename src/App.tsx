@@ -54,6 +54,10 @@ function App() {
     if (activeData?.isOption) {
       const activity = activeData.activity as Activity;
       if (activity) {
+        if (days[destDay].length >= 3) {
+          alert("You can only add up to 3 activities per day.");
+          return;
+        }
         addActivity(destDay, activity);
       }
       return;
